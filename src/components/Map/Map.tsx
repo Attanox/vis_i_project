@@ -1,69 +1,50 @@
-import React from "react";
-import * as L from "leaflet";
-import { GeoJsonLayer, ArcLayer } from "@deck.gl/layers";
-// @ts-ignore
-import { LeafletLayer } from "deck.gl-leaflet";
-import { MapView } from "@deck.gl/core";
+import React, { useEffect, useRef, useState } from "react";
+import { geoEqualEarth, geoPath } from "d3-geo";
+import * as d3 from "d3";
+
+import countries from "./world.geo.json";
+import { Feature, Geometry } from "geojson";
 
 import "./Map.css";
 
-const AIR_PORTS =
-  "https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson";
-
-const geoJsonLayer = () =>
-  new GeoJsonLayer({
-    id: "airports",
-    data: AIR_PORTS,
-    // Styles
-    filled: true,
-    pointRadiusMinPixels: 2,
-    pointRadiusScale: 2000,
-    getPointRadius: (f) => 11 - (f as any).properties.scalerank,
-    getFillColor: [200, 0, 80, 180],
-  });
-
-const arcLayer = () =>
-  new ArcLayer({
-    id: "arcs",
-    data: AIR_PORTS,
-    dataTransform: ((d: any) =>
-      d.features.filter((f: any) => f.properties.scalerank < 4)) as any,
-    // Styles
-    getSourcePosition: (f) => [-0.4531566, 51.4709959], // London
-    getTargetPosition: (f) => (f as any).geometry.coordinates,
-    getSourceColor: [0, 128, 200],
-    getTargetColor: [200, 0, 80],
-    getWidth: 1,
-  });
+type TFeature = {
+  type: string;
+  properties: { [key: string]: string | number };
+  geometry: Geometry;
+};
 
 const Map = () => {
-  React.useEffect(() => {
-    const layers = [geoJsonLayer(), arcLayer()];
+  const scale: number = 200;
+  const cx: number = 400;
+  const cy: number = 150;
 
-    const map = L.map(document.getElementById("map") as HTMLElement, {
-      center: [51.47, 0.45],
-      zoom: 4,
-    });
-    L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png",
-      {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }
-    ).addTo(map);
+  const projection = geoEqualEarth()
+    .scale(scale)
+    .translate([cx, cy])
+    .rotate([0, 0]);
 
-    const deckLayer = new LeafletLayer({
-      views: [
-        new MapView({
-          repeat: true,
-        }),
-      ],
-      layers,
-    });
-    map.addLayer(deckLayer);
-  }, []);
+  const onCountryClick = (name: string) => {
+    console.log({ country: name });
+  };
 
-  return <div id="map"></div>;
+  return (
+    <>
+      <svg width={scale * 3} height={scale * 3} viewBox="0 0 800 450">
+        <g>
+          {countries.features.map((d, i) => (
+            <path
+              key={`path-${i}`}
+              d={geoPath().projection(projection)(d as any) as string}
+              fill={`cornflowerblue`}
+              stroke="aliceblue"
+              strokeWidth={0.5}
+              onClick={() => onCountryClick(d.properties.name)}
+            />
+          ))}
+        </g>
+      </svg>
+    </>
+  );
 };
 
 export default Map;

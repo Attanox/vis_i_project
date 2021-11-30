@@ -1,12 +1,12 @@
-.map__container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+path {
+  fill: cornflowerblue;
+  stroke: transparent;
+  stroke-width: 1px;
+  cursor: pointer;
 }
 
-.leaflet-container {
-  width: 100wh;
-  height: 100vh;
+path:hover {
+  stroke-width: 2px;
+  stroke: rgb(100, 164, 237);
+  fill: rgb(102, 100, 237);
 }
