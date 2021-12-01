@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEventHandler, MutableRefObject } from "react";
 import * as d3 from "d3";
 
 import usePreprocessData from "hooks/usePreprocessData";
@@ -40,12 +40,15 @@ const useColorScale = (metricByCountry: { [country: string]: string }) => {
 const getMapProperties = () => {
   const dimensions: Dimensions = {
     width: window.innerWidth * 0.5,
+    height: 0,
     margin: {
       top: 10,
       bottom: 10,
       left: 10,
       right: 10,
     },
+    boundedHeight: 0,
+    boundedWidth: 0,
   };
 
   dimensions.boundedWidth =
@@ -87,6 +90,8 @@ const useMetricByCountry = (year: string, data: HappinessDataset) => {
 };
 
 const Map = (props: { year: string }) => {
+  const tooltipRef = React.useRef<HTMLDivElement>(null);
+
   const countryNameAccessor = (d: any) => d.properties.name;
 
   const { data } = usePreprocessData();
@@ -102,12 +107,57 @@ const Map = (props: { year: string }) => {
     console.log({ country: name });
   };
 
+  const legendGradientID = "legendGradientID";
+
+  const onCountryEnter = (e: any, d: any) => {
+    if (tooltipRef.current) {
+      const metricValue = metricByCountry[e.target.id];
+
+      tooltipRef.current.innerHTML = `
+        <span>${e.target.id}</span><br />
+        <span>${metricValue}</span>
+      `;
+
+      const [centerX, centerY] = pathGenerator.centroid(d);
+
+      const x = centerX + dimensions.margin.left;
+      const y = centerY + dimensions.margin.left;
+
+      tooltipRef.current.style.transform = `
+        translate(
+          calc( ${x}px - 50px ),
+          calc( ${y}px )
+        )
+      `;
+
+      tooltipRef.current.style.opacity = "1";
+    }
+  };
+  const onCountryLeave = (e: any) => {
+    if (tooltipRef.current) tooltipRef.current.style.opacity = "0";
+  };
+
   if (!pathGenerator) return null;
 
   return (
     <>
-      <svg width={dimensions.width} height={dimensions.height}>
+      <div
+        style={{
+          width: "100px",
+          height: "50px",
+          background: "white",
+          color: "#333",
+          border: "1px solid #333",
+          textAlign: "center",
+          opacity: 0,
+        }}
+        ref={tooltipRef}
+      >
+        This is a tool tip!
+      </div>
+      <svg id="wrapper" width={dimensions.width} height={dimensions.height}>
         <g
+          className="bounds"
           style={{
             transform: `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`,
           }}
@@ -131,14 +181,49 @@ const Map = (props: { year: string }) => {
                 key={`path-${i}`}
                 d={pathGenerator(d as any) as string | undefined}
                 className="country"
+                id={countryNameAccessor(d)}
                 fill={fill.color}
                 stroke="aliceblue"
                 strokeWidth={0.5}
                 onClick={() => onCountryClick(countryNameAccessor(d))}
+                onMouseEnter={(e) => onCountryEnter(e, d)}
+                onMouseLeave={onCountryLeave}
               />
             );
           })}
         </g>
+        {props.year ? (
+          <g
+            className="legend"
+            style={{
+              transform: `translate(${80}px, ${
+                dimensions.width < 800
+                  ? dimensions.boundedHeight - 30
+                  : dimensions.boundedHeight * 0.5
+              }px)`,
+              color: "#333",
+            }}
+          >
+            <text y={-23} className="legend-title">
+              Happiness score
+            </text>
+            <text y={-9} className="legend-byline">
+              recorded in: {props.year}
+            </text>
+            <rect
+              x={10}
+              height={16}
+              width={90}
+              fill={`url(#${legendGradientID})`}
+            ></rect>
+          </g>
+        ) : null}
+        <defs>
+          <linearGradient id={legendGradientID}>
+            <stop stopColor="white" offset="0%"></stop>
+            <stop stopColor="darkgreen" offset="100%"></stop>
+          </linearGradient>
+        </defs>
       </svg>
     </>
   );
