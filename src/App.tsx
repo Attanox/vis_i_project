@@ -2,11 +2,20 @@ import React from "react";
 
 import Map from "./components/Map/Map";
 
-import "leaflet/dist/leaflet.css";
 import "./App.css";
 
+import { ChakraProvider } from "@chakra-ui/react";
+import Dropdown from "components/dropdown/Dropdown";
+
 function App() {
-  return <Map />;
+  const [year, setYear] = React.useState("");
+
+  return (
+    <ChakraProvider>
+      <Dropdown onSelect={setYear} />
+      <Map year={year} />
+    </ChakraProvider>
+  );
 }
 
 export default App;

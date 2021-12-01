@@ -1,12 +1,12 @@
-path {
-  fill: cornflowerblue;
-  stroke: transparent;
-  stroke-width: 1px;
+path.country {
+  /* fill: cornflowerblue; */
+  /* stroke: transparent; */
+  /* stroke-width: 1px; */
   cursor: pointer;
 }
 
-path:hover {
-  stroke-width: 2px;
-  stroke: rgb(100, 164, 237);
-  fill: rgb(102, 100, 237);
+path.country:hover {
+  /* stroke-width: 2px; */
+  /* stroke: rgb(100, 164, 237); */
+  /* fill: rgb(102, 100, 237); */
 }
