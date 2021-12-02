@@ -3,6 +3,7 @@ export type HappinessDatum = {
   Country: string;
   Score: string;
   Economy: string;
+  Family: string;
   Health: string;
   Freedom: string;
   Generosity: string;
@@ -23,3 +24,7 @@ export type Dimensions = {
   boundedWidth: number;
   boundedHeight: number;
 };
+
+export type HappinessYear = { year: string; score: string };
+
+export type HappinessSum = { label: string; value: number }[];

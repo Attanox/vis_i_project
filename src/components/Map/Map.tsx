@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, MutableRefObject } from "react";
+import React from "react";
 import * as d3 from "d3";
 
 import usePreprocessData from "hooks/usePreprocessData";
@@ -39,7 +39,7 @@ const useColorScale = (metricByCountry: { [country: string]: string }) => {
 
 const getMapProperties = () => {
   const dimensions: Dimensions = {
-    width: window.innerWidth * 0.5,
+    width: window.innerWidth * 0.9,
     height: 0,
     margin: {
       top: 10,
@@ -89,7 +89,7 @@ const useMetricByCountry = (year: string, data: HappinessDataset) => {
   return { metricByCountry };
 };
 
-const Map = (props: { year: string }) => {
+const Map = (props: { year: string; setCountry: (c: string) => void }) => {
   const tooltipRef = React.useRef<HTMLDivElement>(null);
 
   const countryNameAccessor = (d: any) => d.properties.name;
@@ -101,10 +101,9 @@ const Map = (props: { year: string }) => {
   const { metricByCountry } = useMetricByCountry(props.year, data);
 
   const { colorScale } = useColorScale(metricByCountry);
-  console.log({ colorScale });
 
-  const onCountryClick = (name: string) => {
-    console.log({ country: name });
+  const onCountryClick = (countryName: string) => {
+    props.setCountry(countryName);
   };
 
   const legendGradientID = "legendGradientID";
@@ -121,19 +120,17 @@ const Map = (props: { year: string }) => {
       const [centerX, centerY] = pathGenerator.centroid(d);
 
       const x = centerX + dimensions.margin.left;
-      const y = centerY + dimensions.margin.left;
+      const y = centerY + dimensions.margin.top;
 
-      tooltipRef.current.style.transform = `
-        translate(
-          calc( ${x}px - 50px ),
-          calc( ${y}px )
-        )
-      `;
+      tooltipRef.current.style.transform = `translate(50%, 0)`;
+
+      tooltipRef.current.style.left = `${x}px`;
+      tooltipRef.current.style.top = `${y}px`;
 
       tooltipRef.current.style.opacity = "1";
     }
   };
-  const onCountryLeave = (e: any) => {
+  const onCountryLeave = () => {
     if (tooltipRef.current) tooltipRef.current.style.opacity = "0";
   };
 
@@ -150,20 +147,21 @@ const Map = (props: { year: string }) => {
           border: "1px solid #333",
           textAlign: "center",
           opacity: 0,
+          position: "absolute",
         }}
         ref={tooltipRef}
       >
         This is a tool tip!
       </div>
-      <svg id="wrapper" width={dimensions.width} height={dimensions.height}>
+      <svg id="map-wrapper" width={dimensions.width} height={dimensions.height}>
         <g
-          className="bounds"
+          className="map-bounds"
           style={{
             transform: `translate(${dimensions.margin.left}px, ${dimensions.margin.top}px)`,
           }}
         >
           <path
-            className="earth"
+            className="map-earth-base"
             d={pathGenerator(SPHERE as Feature) as string | undefined}
             fill="lightblue"
           />
@@ -178,7 +176,7 @@ const Map = (props: { year: string }) => {
 
             return (
               <path
-                key={`path-${i}`}
+                key={`map-path-${i}`}
                 d={pathGenerator(d as any) as string | undefined}
                 className="country"
                 id={countryNameAccessor(d)}
@@ -194,7 +192,7 @@ const Map = (props: { year: string }) => {
         </g>
         {props.year ? (
           <g
-            className="legend"
+            className="map-legend"
             style={{
               transform: `translate(${80}px, ${
                 dimensions.width < 800
@@ -204,10 +202,10 @@ const Map = (props: { year: string }) => {
               color: "#333",
             }}
           >
-            <text y={-23} className="legend-title">
+            <text y={-23} className="map-legend-title">
               Happiness score
             </text>
-            <text y={-9} className="legend-byline">
+            <text y={-9} className="map-legend-byline">
               recorded in: {props.year}
             </text>
             <rect
