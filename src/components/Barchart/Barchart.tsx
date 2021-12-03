@@ -12,7 +12,7 @@ import { useD3 } from "hooks/useD3";
 const getDimensions = () => {
   const dimensions: Dimensions = {
     width: 600,
-    height: 600 * 0.6,
+    height: 600,
     boundedWidth: 0,
     boundedHeight: 0,
     margin: {
@@ -55,7 +55,7 @@ const Barchart = (props: { country: string }) => {
       const yScale = d3
         .scaleLinear()
         .domain([0, Number(d3.max(happinessYears, yAccessor))])
-        .rangeRound([
+        .range([
           dimensions.height - dimensions.margin.bottom,
           dimensions.margin.top,
         ]);
@@ -92,10 +92,20 @@ const Barchart = (props: { country: string }) => {
         .data(happinessYears)
         .join("rect")
         .attr("class", "bar")
-        .attr("x", (d: any) => Number(xScale(xAccessor(d))))
+        .attr("rx", 6)
+        .attr("ry", 6)
+        .attr(
+          "x",
+          (d: HappinessYear) =>
+            Number(xScale(xAccessor(d))) + dimensions.margin.left * 3
+        )
         .attr("width", xScale.bandwidth())
-        .attr("y", (d: any) => yScale(Number(yAccessor(d))))
-        .attr("height", (d: any) => yScale(0) - yScale(Number(yAccessor(d))));
+        .attr("y", (d: HappinessYear) => yScale(Number(yAccessor(d))))
+        .attr(
+          "height",
+          (d: HappinessYear) => yScale(0) - yScale(Number(yAccessor(d)))
+        )
+        .style("border-radius", "4px 4px 0 0");
     },
     [props.country, happinessYears]
   );
@@ -120,7 +130,7 @@ const Barchart = (props: { country: string }) => {
         <g
           className="barchart-x-axis"
           style={{
-            transform: `translate(${0}px, ${
+            transform: `translate(${dimensions.margin.left * 5}px, ${
               dimensions.height - dimensions.margin.bottom
             }px)`,
           }}
@@ -128,7 +138,7 @@ const Barchart = (props: { country: string }) => {
         <g
           className="barchart-y-axis"
           style={{
-            transform: `translate(${dimensions.margin.left}px, ${0}px)`,
+            transform: `translate(${dimensions.margin.left * 3}px, ${0}px)`,
           }}
         />
       </svg>
