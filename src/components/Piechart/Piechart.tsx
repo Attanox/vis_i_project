@@ -32,8 +32,8 @@ const getDimensions = () => {
 const Piechart = (props: { year: string; country: string }) => {
   const dimensions = getDimensions();
 
-  const innerRadius = 20;
-  const outerRadius = 100;
+  const innerRadius = 50;
+  const outerRadius = 150;
 
   const metricAccessor = (d: { label: string; value: number }) => d.value;
 
@@ -45,7 +45,7 @@ const Piechart = (props: { year: string; country: string }) => {
     (svg: any) => {
       const colorScale = d3
         .scaleSequential()
-        .interpolator(d3.interpolateCool)
+        .interpolator(d3.interpolateWarm)
         .domain([0, 5]);
 
       svg.selectAll("path.pie-slice").remove();
@@ -73,26 +73,26 @@ const Piechart = (props: { year: string; country: string }) => {
         .attr("class", "pie-slice")
         .style("fill", (_: any, i: any) => colorScale(i))
         .style("stroke", "#ffffff")
-        .style("stroke-width", 0)
+        .style("stroke-width", 1)
         .style(
           "transform",
-          `translate(${dimensions.boundedWidth / 2}px, ${
-            dimensions.boundedHeight / 2
+          `translate(${dimensions.boundedWidth / 2 - 100}px, ${
+            dimensions.boundedHeight / 2 + 25
           }px)`
         );
       // Append text labels
-      arc
-        .append("text")
-        .attr("text-anchor", "middle")
-        .attr("alignment-baseline", "middle")
-        .text((d: any) => d.data.label)
-        .style("fill", "#ffffff")
-        .attr("transform", (d: any) => {
-          const [x, y] = arcGenerator.centroid(d);
-          return `translate(${x + dimensions.boundedWidth / 2}, ${
-            y + dimensions.boundedHeight / 2
-          })`;
-        });
+      // arc
+      //   .append("text")
+      //   .attr("text-anchor", "middle")
+      //   .attr("alignment-baseline", "middle")
+      //   .text((d: any) => d.data.label)
+      //   .style("fill", "#ffffff")
+      //   .attr("transform", (d: any) => {
+      //     const [x, y] = arcGenerator.centroid(d);
+      //     return `translate(${x + dimensions.boundedWidth / 2}, ${
+      //       y + dimensions.boundedHeight / 2
+      //     })`;
+      //   });
     },
     [happinessSum]
   );

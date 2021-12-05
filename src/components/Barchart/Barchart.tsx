@@ -1,4 +1,4 @@
-import React, { Ref } from "react";
+import React from "react";
 import * as d3 from "d3";
 
 import usePreprocessData from "hooks/usePreprocessData";
@@ -8,11 +8,12 @@ import { Dimensions, HappinessYear } from "types";
 import "./Barchart.css";
 import useHappinessYears from "hooks/useHappinessYears";
 import { useD3 } from "hooks/useD3";
+import { COLORS } from "shared/constants";
 
 const getDimensions = () => {
   const dimensions: Dimensions = {
     width: 600,
-    height: 600,
+    height: 600 * 0.6,
     boundedWidth: 0,
     boundedHeight: 0,
     margin: {
@@ -31,7 +32,10 @@ const getDimensions = () => {
   return dimensions;
 };
 
-const Barchart = (props: { country: string }) => {
+const Barchart = (props: {
+  country: string;
+  setYear: (year: string) => void;
+}) => {
   const dimensions = getDimensions();
 
   const { data } = usePreprocessData();
@@ -87,13 +91,12 @@ const Barchart = (props: { country: string }) => {
 
       svg
         .select(".barchart-bounds")
-        .attr("fill", "steelblue")
+        .attr("fill", `${COLORS.text}`)
         .selectAll(".bar")
         .data(happinessYears)
         .join("rect")
         .attr("class", "bar")
-        .attr("rx", 6)
-        .attr("ry", 6)
+        .attr("id", (d: HappinessYear) => `bar-year-${xAccessor(d)}`)
         .attr(
           "x",
           (d: HappinessYear) =>
@@ -105,7 +108,9 @@ const Barchart = (props: { country: string }) => {
           "height",
           (d: HappinessYear) => yScale(0) - yScale(Number(yAccessor(d)))
         )
-        .style("border-radius", "4px 4px 0 0");
+        .on("click", (e: PointerEvent) =>
+          props.setYear((e.target as HTMLElement).id.replace("bar-year-", ""))
+        );
     },
     [props.country, happinessYears]
   );
@@ -133,12 +138,14 @@ const Barchart = (props: { country: string }) => {
             transform: `translate(${dimensions.margin.left * 5}px, ${
               dimensions.height - dimensions.margin.bottom
             }px)`,
+            color: `#fefefe`,
           }}
         />
         <g
           className="barchart-y-axis"
           style={{
             transform: `translate(${dimensions.margin.left * 3}px, ${0}px)`,
+            color: `#fefefe`,
           }}
         />
       </svg>

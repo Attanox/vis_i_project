@@ -1,5 +1,6 @@
 import React from "react";
 import * as d3 from "d3";
+import { COLORS } from "shared/constants";
 
 const useColorScale = (metricByCountry: { [country: string]: string }) => {
   const [colorScale, setColorScale] = React.useState<any>();
@@ -16,7 +17,7 @@ const useColorScale = (metricByCountry: { [country: string]: string }) => {
         const newColorScale = d3
           .scaleLinear<string>()
           .domain([-Number(maxChange), Number(maxChange)])
-          .range(["white", "darkgreen"]);
+          .range([COLORS.highlight, COLORS.text]);
 
         setColorScale({ call: newColorScale });
       }

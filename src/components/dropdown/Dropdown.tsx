@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from "react";
 
 import { Select } from "@chakra-ui/select";
-import { YEARS } from "shared/constants";
+import { COLORS, YEARS } from "shared/constants";
 
 const Dropdown = (props: { onSelect: (y: string) => void }) => {
   const [selected, setSelected] = React.useState<string>("");
@@ -18,16 +18,16 @@ const Dropdown = (props: { onSelect: (y: string) => void }) => {
 
   return (
     <Select
-      bg="cornflowerblue"
-      borderColor="cornflowerblue"
-      color="white"
+      bg={`${COLORS.text}`}
+      borderColor={`${COLORS.text}`}
+      color={`#fff`}
       placeholder="Select year of happiness"
       onChange={onChange}
       value={selected}
       width={"250px"}
     >
       {YEARS.map((y, i) => (
-        <option key={i} style={{ color: "cornflowerblue" }} value={y}>
+        <option key={i} style={{ color: COLORS.text }} value={y}>
           {y}
         </option>
       ))}

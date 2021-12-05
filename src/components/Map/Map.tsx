@@ -4,13 +4,14 @@ import * as d3 from "d3";
 import usePreprocessData from "hooks/usePreprocessData";
 
 import { Feature } from "geojson";
-import { Dimensions, HappinessDataset } from "types";
+import { Dimensions } from "types";
 
 import countries from "./world.geo.json";
 
 import "./Map.css";
 import useMetricByCountry from "hooks/useMetricByCountry";
 import useColorScale from "hooks/useColorScale";
+import { COLORS } from "shared/constants";
 
 const SPHERE = { type: "Sphere" };
 
@@ -118,7 +119,12 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
           <path
             className="map-earth-base"
             d={pathGenerator(SPHERE as Feature) as string | undefined}
-            fill="lightblue"
+            fill={`${COLORS.background}`}
+            style={{
+              stroke: COLORS.background,
+              strokeWidth: `1px`,
+              strokeLinejoin: "round",
+            }}
           />
 
           {countries.features.map((d, i) => {
@@ -135,7 +141,7 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
                 d={pathGenerator(d as any) as string | undefined}
                 className="country"
                 id={countryNameAccessor(d)}
-                fill={fill.color}
+                fill={fill.color || "aliceblue"}
                 stroke="aliceblue"
                 strokeWidth={0.5}
                 onClick={() => onCountryClick(countryNameAccessor(d))}
@@ -173,8 +179,8 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
         ) : null}
         <defs>
           <linearGradient id={legendGradientID}>
-            <stop stopColor="white" offset="0%"></stop>
-            <stop stopColor="darkgreen" offset="100%"></stop>
+            <stop stopColor={`${COLORS.highlight}`} offset="0%"></stop>
+            <stop stopColor={`${COLORS.text}`} offset="100%"></stop>
           </linearGradient>
         </defs>
       </svg>
