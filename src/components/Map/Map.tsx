@@ -56,7 +56,7 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
 
   const { metricByCountry } = useMetricByCountry(props.year, data);
 
-  const { colorScale } = useColorScale(metricByCountry);
+  const { colorScale, change } = useColorScale(metricByCountry);
 
   const onCountryClick = (countryName: string) => {
     props.setCountry(countryName);
@@ -70,7 +70,7 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
 
       tooltipRef.current.innerHTML = `
         <span>${e.target.id}</span><br />
-        <span>${metricValue}</span>
+        <span>${metricValue ? parseFloat(metricValue).toFixed(2) : ""}</span>
       `;
 
       const [centerX, centerY] = pathGenerator.centroid(d);
@@ -78,7 +78,7 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
       const x = centerX + dimensions.margin.left;
       const y = centerY + dimensions.margin.top;
 
-      tooltipRef.current.style.transform = `translate(50%, 0)`;
+      tooltipRef.current.style.transform = `translate(0, 50%)`;
 
       tooltipRef.current.style.left = `${x}px`;
       tooltipRef.current.style.top = `${y}px`;
@@ -94,19 +94,7 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
 
   return (
     <>
-      <div
-        style={{
-          width: "100px",
-          height: "50px",
-          background: "white",
-          color: "#333",
-          border: "1px solid #333",
-          textAlign: "center",
-          opacity: 0,
-          position: "absolute",
-        }}
-        ref={tooltipRef}
-      >
+      <div id="map-tooltip" ref={tooltipRef}>
         This is a tool tip!
       </div>
       <svg id="map-wrapper" width={dimensions.width} height={dimensions.height}>
@@ -137,7 +125,7 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
 
             return (
               <path
-                key={`map-path-${i}`}
+                key={`map-country-${i}`}
                 d={pathGenerator(d as any) as string | undefined}
                 className="country"
                 id={countryNameAccessor(d)}
@@ -166,8 +154,11 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
             <text y={-23} className="map-legend-title">
               Happiness score
             </text>
-            <text y={-9} className="map-legend-byline">
-              recorded in: {props.year}
+            <text x={-23} y={13}>
+              {change ? change.min : ""}
+            </text>
+            <text x={105} y={13}>
+              {change ? change.max : ""}
             </text>
             <rect
               x={10}

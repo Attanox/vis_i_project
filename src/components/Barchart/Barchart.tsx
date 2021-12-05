@@ -9,6 +9,7 @@ import "./Barchart.css";
 import useHappinessYears from "hooks/useHappinessYears";
 import { useD3 } from "hooks/useD3";
 import { COLORS } from "shared/constants";
+import { Heading } from "@chakra-ui/layout";
 
 const getDimensions = () => {
   const dimensions: Dimensions = {
@@ -34,6 +35,7 @@ const getDimensions = () => {
 
 const Barchart = (props: {
   country: string;
+  year: string;
   setYear: (year: string) => void;
 }) => {
   const dimensions = getDimensions();
@@ -50,23 +52,21 @@ const Barchart = (props: {
       const xScale = d3
         .scaleBand()
         .domain(happinessYears.map(xAccessor))
-        .rangeRound([
-          dimensions.margin.left,
-          dimensions.width - dimensions.margin.right,
-        ])
+        .rangeRound([dimensions.margin.left, dimensions.boundedWidth])
         .padding(0.1);
 
       const yScale = d3
         .scaleLinear()
         .domain([0, Number(d3.max(happinessYears, yAccessor))])
-        .range([
-          dimensions.height - dimensions.margin.bottom,
-          dimensions.margin.top,
-        ]);
+        .range([dimensions.boundedHeight, dimensions.margin.top]);
 
       const xExtent = d3.extent(xScale.domain());
       const xTicks = d3
-        .ticks(Number(xExtent[0]), Number(xExtent[1]), dimensions.width / 40)
+        .ticks(
+          Number(xExtent[0]),
+          Number(xExtent[1]),
+          dimensions.boundedWidth / 40
+        )
         .filter((v) => xScale(`${v}`) !== undefined);
       const xAxisGenerator = (g: any) =>
         g.call(
@@ -78,7 +78,7 @@ const Barchart = (props: {
 
       const yExtent = d3.extent(yScale.domain());
       const yTicks = d3
-        .ticks(yExtent[0] || 0, yExtent[1] || 0, dimensions.height / 40)
+        .ticks(yExtent[0] || 0, yExtent[1] || 0, dimensions.boundedHeight / 40)
         .filter((v) => yScale(v) !== undefined);
       const yAxisGenerator = (g: any) => {
         g.call(d3.axisLeft(yScale).tickValues(yTicks)).call((g: any) =>
@@ -95,7 +95,9 @@ const Barchart = (props: {
         .selectAll(".bar")
         .data(happinessYears)
         .join("rect")
-        .attr("class", "bar")
+        .attr("class", (d: HappinessYear) =>
+          d.year === props.year ? "current bar" : "bar"
+        )
         .attr("id", (d: HappinessYear) => `bar-year-${xAccessor(d)}`)
         .attr(
           "x",
@@ -119,33 +121,37 @@ const Barchart = (props: {
 
   return (
     <>
+      <Heading as="h3" size="lg" color={COLORS.text} className="heading">
+        {props.country}
+      </Heading>
       <svg
         ref={svgRef}
         id="barchart-wrapper"
         width={dimensions.width}
         height={dimensions.height}
-        style={{ marginLeft: `${dimensions.margin.left}px` }}
       >
         <g
           className="barchart-bounds"
-          style={{
-            transform: `translate(${dimensions.margin.left}px, ${0}px)`,
-          }}
+          style={
+            {
+              // transform: `translate(${dimensions.margin.left}px, ${0}px)`,
+            }
+          }
         />
         <g
           className="barchart-x-axis"
           style={{
-            transform: `translate(${dimensions.margin.left * 5}px, ${
-              dimensions.height - dimensions.margin.bottom
+            transform: `translate(${dimensions.margin.left * 3}px, ${
+              dimensions.boundedHeight
             }px)`,
-            color: `#fefefe`,
+            color: `${COLORS.text}`,
           }}
         />
         <g
           className="barchart-y-axis"
           style={{
             transform: `translate(${dimensions.margin.left * 3}px, ${0}px)`,
-            color: `#fefefe`,
+            color: `${COLORS.text}`,
           }}
         />
       </svg>

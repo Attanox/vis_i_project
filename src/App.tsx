@@ -74,7 +74,7 @@ function App() {
 
             <Stack flex="1">
               <StackItem {...boxStyles} margin="0px" flex="1" {...retroBG}>
-                <Barchart country={country} setYear={setBarYear} />
+                <Barchart country={country} year={year} setYear={setBarYear} />
               </StackItem>
               <StackItem
                 {...boxStyles}

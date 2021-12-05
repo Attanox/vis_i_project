@@ -6,6 +6,7 @@ import { Dimensions } from "types";
 
 import "./Piechart.css";
 import { useD3 } from "hooks/useD3";
+import { COLORS } from "shared/constants";
 
 const getDimensions = () => {
   const dimensions: Dimensions = {
@@ -49,6 +50,8 @@ const Piechart = (props: { year: string; country: string }) => {
         .domain([0, 5]);
 
       svg.selectAll("path.pie-slice").remove();
+      svg.selectAll("text.heading").remove();
+      svg.selectAll("rect").remove();
 
       const arcGenerator = d3
         .arc()
@@ -76,23 +79,32 @@ const Piechart = (props: { year: string; country: string }) => {
         .style("stroke-width", 1)
         .style(
           "transform",
-          `translate(${dimensions.boundedWidth / 2 - 100}px, ${
+          `translate(${dimensions.boundedWidth / 2 + 40}px, ${
             dimensions.boundedHeight / 2 + 25
           }px)`
         );
-      // Append text labels
-      // arc
-      //   .append("text")
-      //   .attr("text-anchor", "middle")
-      //   .attr("alignment-baseline", "middle")
-      //   .text((d: any) => d.data.label)
-      //   .style("fill", "#ffffff")
-      //   .attr("transform", (d: any) => {
-      //     const [x, y] = arcGenerator.centroid(d);
-      //     return `translate(${x + dimensions.boundedWidth / 2}, ${
-      //       y + dimensions.boundedHeight / 2
-      //     })`;
-      //   });
+
+      arc
+        .append("rect") // make a matching color rect
+        .attr("width", 20)
+        .attr("height", 20)
+        .attr("y", (d: any, i: any) => 20 * i * 1.8 + 15)
+        .attr("fill", (_: any, i: any) => {
+          console.log({ _, i });
+          return colorScale(i);
+        });
+
+      arc
+        .append("text")
+        .text(
+          (d: any) => `${d.data.label} (${parseFloat(d.data.value).toFixed(2)})`
+        )
+        .style("font-size", 18)
+        .style("font-weight", 700)
+        .style("color", COLORS.text)
+        .attr("class", "heading")
+        .attr("y", (d: any, i: any) => 20 * i * 1.8 + 15 * 2)
+        .attr("x", 30);
     },
     [happinessSum]
   );
@@ -110,12 +122,14 @@ const Piechart = (props: { year: string; country: string }) => {
         height={dimensions.height}
       >
         <g
-          id="piechart-bounds"
-          style={{
-            transform: `translate(${dimensions.boundedWidth / 2}, ${
-              dimensions.boundedHeight / 2
-            })`,
-          }}
+          id="piechart-legend"
+          style={
+            {
+              // transform: `translate(${dimensions.boundedWidth / 2}, ${
+              //   dimensions.boundedHeight / 2
+              // })`,
+            }
+          }
         ></g>
       </svg>
     </>

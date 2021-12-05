@@ -3,6 +3,14 @@
   transition: fill 0.3s ease-in-out;
 }
 
+.bar.current {
+  fill: #f88bc4;
+}
+
+.bar.current:hover {
+  fill: #ca6298;
+}
+
 .bar:hover {
   fill: #302566;
 }
