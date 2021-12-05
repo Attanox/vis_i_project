@@ -9,37 +9,14 @@ import { Dimensions, HappinessDataset } from "types";
 import countries from "./world.geo.json";
 
 import "./Map.css";
+import useMetricByCountry from "hooks/useMetricByCountry";
+import useColorScale from "hooks/useColorScale";
 
 const SPHERE = { type: "Sphere" };
 
-const useColorScale = (metricByCountry: { [country: string]: string }) => {
-  const [colorScale, setColorScale] = React.useState<any>();
-
-  React.useEffect(() => {
-    const metricValues = Object.values(metricByCountry);
-
-    const metricValueExtent = d3.extent(metricValues);
-
-    if (metricValueExtent[0] && metricValueExtent[1]) {
-      const maxChange = d3.max([metricValueExtent[0], metricValueExtent[1]]);
-
-      if (maxChange) {
-        const newColorScale = d3
-          .scaleLinear<string>()
-          .domain([-Number(maxChange), Number(maxChange)])
-          .range(["white", "darkgreen"]);
-
-        setColorScale({ call: newColorScale });
-      }
-    }
-  }, [metricByCountry]);
-
-  return { colorScale };
-};
-
 const getMapProperties = () => {
   const dimensions: Dimensions = {
-    width: window.innerWidth * 0.9,
+    width: window.innerWidth * 0.6,
     height: 0,
     margin: {
       top: 10,
@@ -65,28 +42,6 @@ const getMapProperties = () => {
   dimensions.height = y1 + dimensions.margin.top + dimensions.margin.bottom;
 
   return { dimensions, pathGenerator };
-};
-
-const useMetricByCountry = (year: string, data: HappinessDataset) => {
-  const metric = "Score";
-
-  const [metricByCountry, setMetricByCountry] = React.useState<{
-    [country: string]: string;
-  }>({});
-
-  React.useEffect(() => {
-    if (year) {
-      const mbc: { [country: string]: string } = {};
-
-      data[year]?.forEach((d) => {
-        mbc[d.Country] = d[metric];
-      });
-
-      setMetricByCountry(mbc);
-    }
-  }, [year, data]);
-
-  return { metricByCountry };
 };
 
 const Map = (props: { year: string; setCountry: (c: string) => void }) => {
