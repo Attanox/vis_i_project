@@ -21,7 +21,7 @@ const useHappinessSum = (
         "Generosity",
         "Health",
         "Trust",
-        "Family",
+        year === "2018" || year === "2019" ? "Social support" : "Family",
       ];
       needed.forEach((n) => {
         sum += Number(correctCountry[n]);
@@ -31,6 +31,7 @@ const useHappinessSum = (
         components.push({
           label: n,
           value: Number(correctCountry[n]) * (sum / 100),
+          original_value: Number(correctCountry[n]),
         });
       });
 

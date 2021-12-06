@@ -3,13 +3,18 @@ import React, { ChangeEvent } from "react";
 import { Select } from "@chakra-ui/select";
 import { COLORS, YEARS } from "shared/constants";
 
-const Dropdown = (props: { onSelect: (y: string) => void }) => {
+const Dropdown = (props: {
+  onSelect: (y: string) => void;
+  passedYear: string;
+}) => {
   const [selected, setSelected] = React.useState<string>("");
+
+  React.useEffect(() => {
+    setSelected(props.passedYear);
+  }, [props.passedYear]);
 
   const onChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
-
-    console.log({ val });
 
     props.onSelect(val);
 

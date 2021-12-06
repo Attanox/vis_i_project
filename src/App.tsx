@@ -24,13 +24,16 @@ const boxStyles: any = {
 function App() {
   const [year, setYear] = React.useState("");
   const [country, setCountry] = React.useState("");
-  const [barYear, setBarYear] = React.useState("");
 
   const theme = extendTheme({
     styles: {
       global: {
         "html, body": {
           backgroundColor: COLORS.background,
+          height: "100%",
+        },
+        "#root": {
+          height: "100%",
         },
       },
     },
@@ -38,7 +41,7 @@ function App() {
 
   return (
     <ChakraProvider theme={theme}>
-      <Stack>
+      <Stack height="100%">
         <StackItem padding="10px 20px">
           <Heading
             color={`${COLORS.text}`}
@@ -63,18 +66,18 @@ function App() {
             global happiness.
           </Heading>
         </StackItem>
-        <StackItem>
-          <Flex width="100%" maxWidth="100%" height="100%" padding="10px  ">
+        <StackItem flex="1">
+          <Flex width="100%" maxWidth="100%" height="100%" padding="10px">
             <Box {...boxStyles} margin="0px 10px 0px 0px" flex="1" {...retroBG}>
               <Flex justifyContent="flex-end" alignItems="center">
-                <Dropdown onSelect={setYear} />
+                <Dropdown onSelect={setYear} passedYear={year} />
               </Flex>
               <Map year={year} setCountry={setCountry} />
             </Box>
 
             <Stack flex="1">
               <StackItem {...boxStyles} margin="0px" flex="1" {...retroBG}>
-                <Barchart country={country} year={year} setYear={setBarYear} />
+                <Barchart country={country} year={year} setYear={setYear} />
               </StackItem>
               <StackItem
                 {...boxStyles}
@@ -82,7 +85,7 @@ function App() {
                 flex="1"
                 {...retroBG}
               >
-                <Piechart year={barYear || year} country={country} />
+                <Piechart year={year} country={country} />
               </StackItem>
             </Stack>
           </Flex>

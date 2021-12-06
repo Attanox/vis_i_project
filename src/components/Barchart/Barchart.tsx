@@ -12,9 +12,11 @@ import { COLORS } from "shared/constants";
 import { Heading } from "@chakra-ui/layout";
 
 const getDimensions = () => {
+  const chartWidth = window.innerWidth * 0.3;
+
   const dimensions: Dimensions = {
-    width: 600,
-    height: 600 * 0.6,
+    width: chartWidth,
+    height: chartWidth * 0.4,
     boundedWidth: 0,
     boundedHeight: 0,
     margin: {
@@ -46,6 +48,17 @@ const Barchart = (props: {
 
   const xAccessor = (d: HappinessYear) => d.year;
   const yAccessor = (d: HappinessYear) => d.score;
+
+  const getClass = (d: HappinessYear, year: string) => {
+    return d.year === year ? "current bar" : "bar";
+  };
+
+  React.useEffect(() => {
+    d3.select(".barchart-bounds")
+      .selectAll(".bar")
+      .data(happinessYears)
+      .attr("class", (d: HappinessYear) => getClass(d, props.year));
+  }, [props.year, happinessYears]);
 
   const svgRef = useD3(
     (svg: any) => {
@@ -95,10 +108,9 @@ const Barchart = (props: {
         .selectAll(".bar")
         .data(happinessYears)
         .join("rect")
-        .attr("class", (d: HappinessYear) =>
-          d.year === props.year ? "current bar" : "bar"
-        )
+        .attr("class", (d: HappinessYear) => getClass(d, props.year))
         .attr("id", (d: HappinessYear) => `bar-year-${xAccessor(d)}`)
+
         .attr(
           "x",
           (d: HappinessYear) =>
@@ -110,9 +122,14 @@ const Barchart = (props: {
           "height",
           (d: HappinessYear) => yScale(0) - yScale(Number(yAccessor(d)))
         )
-        .on("click", (e: PointerEvent) =>
-          props.setYear((e.target as HTMLElement).id.replace("bar-year-", ""))
-        );
+        .on("click", (e: PointerEvent) => {
+          const newYear = (e.target as HTMLElement).id.replace("bar-year-", "");
+          props.setYear(newYear);
+          d3.select(".barchart-bounds")
+            .selectAll(".bar")
+            .data(happinessYears)
+            .attr("class", (d: HappinessYear) => getClass(d, newYear));
+        });
     },
     [props.country, happinessYears]
   );

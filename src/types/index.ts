@@ -27,4 +27,8 @@ export type Dimensions = {
 
 export type HappinessYear = { year: string; score: string };
 
-export type HappinessSum = { label: string; value: number }[];
+export type HappinessSum = {
+  label: string;
+  value: number;
+  original_value: number;
+}[];

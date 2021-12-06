@@ -7,11 +7,13 @@ import { Dimensions } from "types";
 import "./Piechart.css";
 import { useD3 } from "hooks/useD3";
 import { COLORS } from "shared/constants";
+import { Heading } from "@chakra-ui/layout";
 
 const getDimensions = () => {
+  const chartWidth = window.innerWidth * 0.3;
   const dimensions: Dimensions = {
-    width: 600,
-    height: 600 * 0.6,
+    width: chartWidth,
+    height: chartWidth * 0.5,
     boundedWidth: 0,
     boundedHeight: 0,
     margin: {
@@ -33,8 +35,8 @@ const getDimensions = () => {
 const Piechart = (props: { year: string; country: string }) => {
   const dimensions = getDimensions();
 
-  const innerRadius = 50;
-  const outerRadius = 150;
+  const innerRadius = dimensions.boundedHeight * 0.15;
+  const outerRadius = dimensions.boundedHeight * 0.6;
 
   const metricAccessor = (d: { label: string; value: number }) => d.value;
 
@@ -79,8 +81,8 @@ const Piechart = (props: { year: string; country: string }) => {
         .style("stroke-width", 1)
         .style(
           "transform",
-          `translate(${dimensions.boundedWidth / 2 + 40}px, ${
-            dimensions.boundedHeight / 2 + 25
+          `translate(${dimensions.boundedWidth / 1.5}px, ${
+            dimensions.boundedHeight / 1.5
           }px)`
         );
 
@@ -90,14 +92,14 @@ const Piechart = (props: { year: string; country: string }) => {
         .attr("height", 20)
         .attr("y", (d: any, i: any) => 20 * i * 1.8 + 15)
         .attr("fill", (_: any, i: any) => {
-          console.log({ _, i });
+          // console.log({ _, i });
           return colorScale(i);
         });
 
       arc
         .append("text")
         .text(
-          (d: any) => `${d.data.label} (${parseFloat(d.data.value).toFixed(2)})`
+          (d: any) => `${d.data.label} (${d.data.original_value.toFixed(2)})`
         )
         .style("font-size", 18)
         .style("font-weight", 700)
@@ -115,6 +117,9 @@ const Piechart = (props: { year: string; country: string }) => {
 
   return (
     <>
+      <Heading as="h3" size="lg" color={COLORS.text} className="heading">
+        {props.year}
+      </Heading>
       <svg
         ref={svgRef}
         id="piechart-wrapper"

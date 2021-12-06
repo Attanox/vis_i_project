@@ -75,13 +75,15 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
 
       const [centerX, centerY] = pathGenerator.centroid(d);
 
-      const x = centerX + dimensions.margin.left;
-      const y = centerY + dimensions.margin.top;
+      const x =
+        centerX + dimensions.margin.left - dimensions.boundedWidth * 0.44;
+      const y =
+        centerY + dimensions.margin.top - dimensions.boundedHeight * 0.44;
 
-      tooltipRef.current.style.transform = `translate(0, 50%)`;
+      tooltipRef.current.style.transform = `translate(calc( -50% + ${x}px), calc(-100% + ${y}px))`;
 
-      tooltipRef.current.style.left = `${x}px`;
-      tooltipRef.current.style.top = `${y}px`;
+      // tooltipRef.current.style.left = `${x}px`;
+      // tooltipRef.current.style.top = `${metricValue ? y + 210 : y + 250}px`;
 
       tooltipRef.current.style.opacity = "1";
     }
