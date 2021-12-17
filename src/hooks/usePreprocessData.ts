@@ -16,6 +16,7 @@ const usePreprocessData = (): { data: HappinessDataset } => {
 
   React.useEffect(() => {
     const joined = createJoinedDataset();
+    console.log({ joined });
     setData(joined);
   }, []);
 

@@ -12,6 +12,8 @@ import "./Map.css";
 import useMetricByCountry from "hooks/useMetricByCountry";
 import useColorScale from "hooks/useColorScale";
 import { COLORS } from "shared/constants";
+import { useD3 } from "hooks/useD3";
+import { D3ZoomEvent } from "d3";
 
 const SPHERE = { type: "Sphere" };
 
@@ -56,6 +58,18 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
 
   const { metricByCountry } = useMetricByCountry(props.year, data);
 
+  const svgRef = useD3((svg: any) => {
+    const g = svg.select(".map-bounds");
+    const zoom = d3
+      .zoom()
+      .scaleExtent([1, 8])
+      .on("zoom", function (event) {
+        g.selectAll("path").attr("transform", event.transform);
+      });
+
+    svg.call(zoom);
+  });
+
   const { colorScale, change } = useColorScale(metricByCountry);
 
   const onCountryClick = (countryName: string) => {
@@ -99,7 +113,12 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
       <div id="map-tooltip" ref={tooltipRef}>
         This is a tool tip!
       </div>
-      <svg id="map-wrapper" width={dimensions.width} height={dimensions.height}>
+      <svg
+        id="map-wrapper"
+        ref={svgRef}
+        width={dimensions.width}
+        height={dimensions.height}
+      >
         <g
           className="map-bounds"
           style={{
@@ -142,33 +161,49 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
           })}
         </g>
         {props.year ? (
-          <g
-            className="map-legend"
-            style={{
-              transform: `translate(${80}px, ${
+          <>
+            <rect
+              fill="#fff"
+              x="35px"
+              y={
                 dimensions.width < 800
                   ? dimensions.boundedHeight - 30
-                  : dimensions.boundedHeight * 0.5
-              }px)`,
-              color: "#333",
-            }}
-          >
-            <text y={-23} className="map-legend-title">
-              Happiness score
-            </text>
-            <text x={-23} y={13}>
-              {change ? change.min : ""}
-            </text>
-            <text x={105} y={13}>
-              {change ? change.max : ""}
-            </text>
-            <rect
-              x={10}
-              height={16}
-              width={90}
-              fill={`url(#${legendGradientID})`}
-            ></rect>
-          </g>
+                  : dimensions.boundedHeight * 0.5 - 45
+              }
+              width="200px"
+              height="75px"
+              rx="15"
+              stroke={COLORS.text}
+              strokeWidth={1}
+            />
+            <g
+              className="map-legend"
+              style={{
+                transform: `translate(${80}px, ${
+                  dimensions.width < 800
+                    ? dimensions.boundedHeight - 30
+                    : dimensions.boundedHeight * 0.5
+                }px)`,
+                color: "#333",
+              }}
+            >
+              <text y={-23} className="map-legend-title">
+                Happiness score
+              </text>
+              <text x={-23} y={13}>
+                {change ? change.min : ""}
+              </text>
+              <text x={105} y={13}>
+                {change ? change.max : ""}
+              </text>
+              <rect
+                x={10}
+                height={16}
+                width={90}
+                fill={`url(#${legendGradientID})`}
+              ></rect>
+            </g>
+          </>
         ) : null}
         <defs>
           <linearGradient id={legendGradientID}>

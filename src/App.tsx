@@ -10,6 +10,7 @@ import Dropdown from "components/dropdown/Dropdown";
 import Barchart from "components/Barchart/Barchart";
 import Piechart from "components/Piechart/Piechart";
 import { COLORS, retroBG } from "shared/constants";
+import Timeline from "components/Timeline/Timeline";
 
 const boxStyles: any = {
   padding: "15px 30px",
@@ -70,7 +71,7 @@ function App() {
           <Flex width="100%" maxWidth="100%" height="100%" padding="10px">
             <Box {...boxStyles} margin="0px 10px 0px 0px" flex="1" {...retroBG}>
               <Flex justifyContent="flex-end" alignItems="center">
-                <Dropdown onSelect={setYear} passedYear={year} />
+                <Timeline onSelect={setYear} passedYear={year} />
               </Flex>
               <Map year={year} setCountry={setCountry} />
             </Box>
