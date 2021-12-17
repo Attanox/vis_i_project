@@ -13,7 +13,6 @@ import useMetricByCountry from "hooks/useMetricByCountry";
 import useColorScale from "hooks/useColorScale";
 import { COLORS } from "shared/constants";
 import { useD3 } from "hooks/useD3";
-import { D3ZoomEvent } from "d3";
 
 const SPHERE = { type: "Sphere" };
 
@@ -44,17 +43,18 @@ const getMapProperties = () => {
   dimensions.boundedHeight = y1;
   dimensions.height = y1 + dimensions.margin.top + dimensions.margin.bottom;
 
-  return { dimensions, pathGenerator };
+  return { dimensions, pathGenerator, projection };
 };
 
 const Map = (props: { year: string; setCountry: (c: string) => void }) => {
   const tooltipRef = React.useRef<HTMLDivElement>(null);
+  const [zoomCoords, setZoomCoords] = React.useState({ k: 0, x: 0, y: 0 });
 
   const countryNameAccessor = (d: any) => d.properties.name;
 
   const { data } = usePreprocessData();
 
-  const { dimensions, pathGenerator } = getMapProperties();
+  const { dimensions, pathGenerator, projection } = getMapProperties();
 
   const { metricByCountry } = useMetricByCountry(props.year, data);
 
@@ -64,6 +64,8 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
       .zoom()
       .scaleExtent([1, 8])
       .on("zoom", function (event) {
+        const { x, y, k } = event.transform;
+        setZoomCoords({ k, x, y });
         g.selectAll("path").attr("transform", event.transform);
       });
 
@@ -89,15 +91,17 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
 
       const [centerX, centerY] = pathGenerator.centroid(d);
 
-      const x =
-        centerX + dimensions.margin.left - dimensions.boundedWidth * 0.44;
-      const y =
-        centerY + dimensions.margin.top - dimensions.boundedHeight * 0.44;
+      const x = zoomCoords.k
+        ? centerX * zoomCoords.k + dimensions.margin.left + zoomCoords.x
+        : centerX + dimensions.margin.left;
+      const y = zoomCoords.k
+        ? centerY * zoomCoords.k + dimensions.margin.top + zoomCoords.y
+        : centerY + dimensions.margin.top;
 
-      tooltipRef.current.style.transform = `translate(calc( -50% + ${x}px), calc(-100% + ${y}px))`;
+      tooltipRef.current.style.transform = `translate(-50%, -100%)`;
 
-      // tooltipRef.current.style.left = `${x}px`;
-      // tooltipRef.current.style.top = `${metricValue ? y + 210 : y + 250}px`;
+      tooltipRef.current.style.left = `${x}px`;
+      tooltipRef.current.style.top = `${y}px`;
 
       tooltipRef.current.style.opacity = "1";
     }
@@ -109,7 +113,7 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
   if (!pathGenerator) return null;
 
   return (
-    <>
+    <div style={{ position: "relative" }}>
       <div id="map-tooltip" ref={tooltipRef}>
         This is a tool tip!
       </div>
@@ -212,7 +216,7 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
           </linearGradient>
         </defs>
       </svg>
-    </>
+    </div>
   );
 };
 
