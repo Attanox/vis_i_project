@@ -130,6 +130,28 @@ const Barchart = (props: {
             .data(happinessYears)
             .attr("class", (d: HappinessYear) => getClass(d, newYear));
         });
+
+      svg
+        .select(".text-wrapper")
+        .selectAll(".text")
+        .data(happinessYears)
+        .join("text")
+        .attr("class", "text heading")
+        .text(function (d: HappinessYear) {
+          return parseFloat(d.score).toFixed(2);
+        })
+        .attr("text-anchor", "middle")
+        .attr("x", function (d: HappinessYear, i: number) {
+          const w = xScale.bandwidth();
+          return (
+            Number(xScale(xAccessor(d))) + dimensions.margin.left * 3 + w / 2
+          );
+        })
+        .attr("y", function (d: HappinessYear) {
+          return yScale(Number(yAccessor(d))) + 20;
+        })
+        .attr("font-size", "18px")
+        .attr("fill", "white");
     },
     [props.country, happinessYears]
   );
@@ -171,6 +193,7 @@ const Barchart = (props: {
             color: `${COLORS.text}`,
           }}
         />
+        <g className="text-wrapper" />
       </svg>
     </>
   );

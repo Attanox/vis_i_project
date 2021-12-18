@@ -22,16 +22,19 @@ const useHappinessSum = (
         "Health",
         "Trust",
         year === "2018" || year === "2019" ? "Social support" : "Family",
+        "Dystopia Residual",
       ];
       needed.forEach((n) => {
-        sum += Number(correctCountry[n]);
+        const add = Number(correctCountry[n]) || -5;
+        sum += add;
       });
 
       needed.forEach((n) => {
+        const val = Number(correctCountry[n]) || -5;
         components.push({
           label: n,
-          value: Number(correctCountry[n]) * (sum / 100),
-          original_value: Number(correctCountry[n]),
+          value: val * (sum / 100),
+          original_value: val,
         });
       });
 

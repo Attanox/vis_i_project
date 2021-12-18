@@ -49,7 +49,7 @@ const Piechart = (props: { year: string; country: string }) => {
       const colorScale = d3
         .scaleSequential()
         .interpolator(d3.interpolateWarm)
-        .domain([0, 5]);
+        .domain([0, 6]);
 
       svg.selectAll("path.pie-slice").remove();
       svg.selectAll("text.heading").remove();
@@ -110,8 +110,6 @@ const Piechart = (props: { year: string; country: string }) => {
     },
     [happinessSum]
   );
-
-  console.log({ happinessSum });
 
   if (!happinessSum.length) return null;
 
