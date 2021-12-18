@@ -40,6 +40,10 @@ convert('./2018.csv','./2018_modified.csv')
 convert('./2019.csv','./2019_modified.csv')
 ```
 
+Some years there is no record for certain countries, which can be seen by white polygon on map, while there is selected year.
+
+Also, some manual preprocessing was done, because polygons in GeoJSON format have as one of the properties name of state, but sometimes it didn't match with happiness report dataset names, so I just manually changed it.
+
 ## Visualization methods and interactions
 
 When it came to visualizing countries immediate and obvious choice was using choropleth map. Polygons representing states are colored depending on main happiness score. User can hover over each polygon and pop-up with state name and happiness score appears. Upon clicking polygon, two other diagrams will appear on right handside. One of them is barchart, which displayes column for each year, when happiness score was recorded. Clicking on bar will affect piechart below. Piechart displayes components of happiness score. Those are values like economy, family, etc.
