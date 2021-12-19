@@ -12,11 +12,11 @@ import { COLORS } from "shared/constants";
 import { Heading } from "@chakra-ui/layout";
 
 const getDimensions = () => {
-  const chartWidth = window.innerWidth * 0.3;
+  const chartWidth = window.innerWidth * 0.25;
 
   const dimensions: Dimensions = {
     width: chartWidth,
-    height: chartWidth * 0.4,
+    height: chartWidth * 0.75,
     boundedWidth: 0,
     boundedHeight: 0,
     margin: {

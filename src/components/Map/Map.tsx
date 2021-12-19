@@ -169,11 +169,7 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
             <rect
               fill="#fff"
               x="35px"
-              y={
-                dimensions.width < 800
-                  ? dimensions.boundedHeight - 30
-                  : dimensions.boundedHeight * 0.5 - 45
-              }
+              y={dimensions.boundedHeight * 0.5 - 45}
               width="200px"
               height="75px"
               rx="15"
@@ -184,9 +180,7 @@ const Map = (props: { year: string; setCountry: (c: string) => void }) => {
               className="map-legend"
               style={{
                 transform: `translate(${80}px, ${
-                  dimensions.width < 800
-                    ? dimensions.boundedHeight - 30
-                    : dimensions.boundedHeight * 0.5
+                  dimensions.boundedHeight * 0.5
                 }px)`,
                 color: "#333",
               }}

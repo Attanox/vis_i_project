@@ -1,16 +1,16 @@
 import React from "react";
 
-import Map from "./components/Map/Map";
-
-import "./App.css";
-
 import { ChakraProvider, extendTheme, Flex, Heading } from "@chakra-ui/react";
 import { Box, Stack, StackItem } from "@chakra-ui/layout";
-import Dropdown from "components/dropdown/Dropdown";
+
+import Map from "./components/Map/Map";
 import Barchart from "components/Barchart/Barchart";
 import Piechart from "components/Piechart/Piechart";
-import { COLORS, retroBG } from "shared/constants";
 import Timeline from "components/Timeline/Timeline";
+
+import { COLORS, retroBG } from "shared/constants";
+
+import "./App.css";
 
 const boxStyles: any = {
   padding: "15px 30px",
@@ -42,7 +42,7 @@ function App() {
 
   return (
     <ChakraProvider theme={theme}>
-      <Stack height="100%">
+      <Stack height="100%" maxWidth="100%">
         <StackItem padding="10px 20px">
           <Heading
             color={`${COLORS.text}`}

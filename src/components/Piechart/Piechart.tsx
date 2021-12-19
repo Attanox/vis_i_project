@@ -10,10 +10,10 @@ import { COLORS } from "shared/constants";
 import { Heading } from "@chakra-ui/layout";
 
 const getDimensions = () => {
-  const chartWidth = window.innerWidth * 0.3;
+  const chartWidth = window.innerWidth * 0.25;
   const dimensions: Dimensions = {
     width: chartWidth,
-    height: chartWidth * 0.5,
+    height: chartWidth * 0.6,
     boundedWidth: 0,
     boundedHeight: 0,
     margin: {
@@ -35,8 +35,8 @@ const getDimensions = () => {
 const Piechart = (props: { year: string; country: string }) => {
   const dimensions = getDimensions();
 
-  const innerRadius = dimensions.boundedHeight * 0.15;
-  const outerRadius = dimensions.boundedHeight * 0.6;
+  const innerRadius = dimensions.boundedWidth * 0.25;
+  const outerRadius = dimensions.boundedWidth * 0.05;
 
   const metricAccessor = (d: { label: string; value: number }) => d.value;
 
@@ -81,8 +81,8 @@ const Piechart = (props: { year: string; country: string }) => {
         .style("stroke-width", 1)
         .style(
           "transform",
-          `translate(${dimensions.boundedWidth / 1.5}px, ${
-            dimensions.boundedHeight / 1.5
+          `translate(${dimensions.boundedWidth * 0.8}px, ${
+            dimensions.boundedHeight * 0.6
           }px)`
         );
 
@@ -90,7 +90,7 @@ const Piechart = (props: { year: string; country: string }) => {
         .append("rect") // make a matching color rect
         .attr("width", 20)
         .attr("height", 20)
-        .attr("y", (d: any, i: any) => 20 * i * 1.8 + 15)
+        .attr("y", (d: any, i: any) => 25 * i)
         .attr("fill", (_: any, i: any) => {
           // console.log({ _, i });
           return colorScale(i);
@@ -105,7 +105,7 @@ const Piechart = (props: { year: string; country: string }) => {
         .style("font-weight", 700)
         .style("color", COLORS.text)
         .attr("class", "heading")
-        .attr("y", (d: any, i: any) => 20 * i * 1.8 + 15 * 2)
+        .attr("y", (d: any, i: any) => 25 * i + 15)
         .attr("x", 30);
     },
     [happinessSum]
