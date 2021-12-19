@@ -92,7 +92,6 @@ const Piechart = (props: { year: string; country: string }) => {
         .attr("height", 20)
         .attr("y", (d: any, i: any) => 25 * i)
         .attr("fill", (_: any, i: any) => {
-          // console.log({ _, i });
           return colorScale(i);
         });
 

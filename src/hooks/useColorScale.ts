@@ -14,7 +14,6 @@ const useColorScale = (metricByCountry: { [country: string]: string }) => {
     if (metricValueExtent[0] && metricValueExtent[1]) {
       const maxChange = d3.max([metricValueExtent[0], metricValueExtent[1]]);
       const minChange = d3.min([metricValueExtent[0], metricValueExtent[1]]);
-      console.log({ minChange, maxChange });
 
       if (maxChange && minChange) {
         const newColorScale = d3

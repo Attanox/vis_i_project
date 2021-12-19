@@ -1,8 +1,10 @@
 # Visualization report
 
+Project can be visited [here](https://tender-heyrovsky-69e303.netlify.app/).
+
 ## Data source
 
-This project visualizes data from **world happiness report** dataset, which holds happiness scores for each of the world's countries for years 2015-2019. Dateset can be found on [Kaggle](https://www.kaggle.com/unsdsn/world-happiness). Besides happiness scores each country has assigned rank and scores in areas like economy, family, freedom, etc. They make up main happiness score mentioned earlier.
+This project visualizes data from **world happiness report** dataset, which holds happiness scores for each of the world's countries for years 2015-2019. Dataset can be found on [Kaggle](https://www.kaggle.com/unsdsn/world-happiness). Besides happiness scores each country has assigned rank and scores in areas like economy, family, freedom, etc. Areas make up main happiness score mentioned earlier.
 
 ## Preprocessing
 
@@ -103,8 +105,8 @@ def convert(inputPath, outputPath):
 
         writer.writerows(all)
 
-convert('./2018.csv','./2018_modified.csv')
-convert('./2019.csv','./2019_modified.csv')
+convert('./2018_preprocessed.csv','./2018_modified.csv')
+convert('./2019_preprocessed.csv','./2019_modified.csv')
 ```
 
 Some years there is no record for certain countries, which can be seen by white polygon on map, while there is selected year.
@@ -117,8 +119,8 @@ When it came to visualizing countries immediate and obvious choice was using cho
 
 ## Observations
 
-Happiest countries, across the board, are Canada, U.S.A, Australia, Finland, Sweden, Norway, Denmark, Netherlands and Switzerland. Their main happiness score is over 7, which doesn't dip. It either stays constant or increases.
+Happiest countries, across the board, are Canada, U.S.A, Australia, Finland, Sweden, Norway, Denmark, Netherlands and Switzerland. Their main happiness score is over 7.
 
 On contrary, not so happy country are mainly countries in Africa. Countries here average value around 4.
 
-Main difference we can observe between these two categories is that people in happy countries tend to score Economy, Family and Health equally. In less happy countries this distribution isn't equal, usually people here rate family higher than other areas. Except for Central African Republic, which has value for family area 0.
+Main difference we can observe between these two categories is that people in happy countries tend to score Economy, Family and Health equally. In less happy countries this distribution isn't equal, usually people here rate family higher than other areas.
