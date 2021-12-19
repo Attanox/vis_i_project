@@ -25,12 +25,11 @@ const useHappinessSum = (
         "Dystopia Residual",
       ];
       needed.forEach((n) => {
-        const add = Number(correctCountry[n]) || -5;
-        sum += add;
+        sum += Number(correctCountry[n]);
       });
 
       needed.forEach((n) => {
-        const val = Number(correctCountry[n]) || -5;
+        const val = Number(correctCountry[n]);
         components.push({
           label: n,
           value: val * (sum / 100),

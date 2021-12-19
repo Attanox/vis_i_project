@@ -113,12 +113,12 @@ Also, some manual preprocessing was done, because polygons in GeoJSON format hav
 
 ## Visualization methods and interactions
 
-When it came to visualizing countries immediate and obvious choice was using choropleth map. Polygons representing states are colored depending on main happiness score. User can hover over each polygon and pop-up with state name and happiness score appears. Upon clicking polygon, two other diagrams will appear on right handside. One of them is barchart, which displayes column for each year, when happiness score was recorded. Clicking on bar will affect piechart below. Piechart displayes components of happiness score. Those are values like economy, family, etc.
+When it came to visualizing countries immediate and obvious choice was using choropleth map. Polygons representing states are colored depending on main happiness score. User can zoom in and out and pan to navigate. When hovering over polygons, pop-up with state name and happiness score appears. Upon clicking polygon, two other diagrams will appear on right handside. One of them is barchart, which displays column for each year, when happiness score was recorded. Clicking on bar will affect piechart below. Piechart displays components of happiness score. Those are values like economy, family, etc.
 
 ## Observations
 
-Happiest countries, across the board, are Canada, U.S.A, Australia, Finland, Sweden, Norway, Denmark, Netherlands and Switzerland. Their main happiness score is over 7, which doesn't dip. It either stayes constant or increases.
+Happiest countries, across the board, are Canada, U.S.A, Australia, Finland, Sweden, Norway, Denmark, Netherlands and Switzerland. Their main happiness score is over 7, which doesn't dip. It either stays constant or increases.
 
 On contrary, not so happy country are mainly countries in Africa. Countries here average value around 4.
 
-Main difference we can observe between these two categories is that people tend to score Economy, Family and Health equally. In less happy countries this distribution isn't equal, usually people here rate family higher than other areas.
+Main difference we can observe between these two categories is that people in happy countries tend to score Economy, Family and Health equally. In less happy countries this distribution isn't equal, usually people here rate family higher than other areas. Except for Central African Republic, which has value for family area 0.
