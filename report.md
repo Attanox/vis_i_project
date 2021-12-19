@@ -6,7 +6,74 @@ This project visualizes data from **world happiness report** dataset, which hold
 
 ## Preprocessing
 
-As mentioned dataset consists of recording happiness data from 2015 to 2019. However this data has slight changes, for example, years 2018 and 2019 don't have value **Dystopia Residual**, which, together with other values in particular areas, factors up main happiness score. Luckily it was easily compute with simple substraction and addition via following code snippet:
+Firstly, I got rid of empty values, which I did with replacing these empty values with average value.
+
+Python code snippet:
+
+```
+import csv
+
+def clean(item, average):
+  result = item
+  try:
+    float(item)
+  except:
+    result = average
+  return result
+
+def getValue(item):
+  try:
+    return float(item)
+  except:
+    return 0.000
+
+
+def preprocess(inputPath, outputPath, correctColIdx):
+  with open(inputPath,'r') as csvSuminput:
+    with open(inputPath, 'r') as csvCleanInput:
+      with open(outputPath, 'w') as csvoutput:
+          writer = csv.writer(csvoutput, lineterminator='\n')
+          sumReader = csv.reader(csvSuminput)
+          cleanReader = csv.reader(csvCleanInput)
+
+          all = []
+          headerRow = next(cleanReader)
+          # append header
+          all.append(headerRow)
+
+          sums = []
+          rows = 0
+
+
+          for row in sumReader:
+            print(row)
+            for idx, item in enumerate(row):
+              if len(sums) < idx + 1:
+                sums.append(0.0)
+              sums[idx] = sums[idx] + getValue(item)
+            rows = rows + 1
+
+          for row in cleanReader:
+            print(row)
+            for idx, item in enumerate(row):
+              # do not change first n columns
+              if idx >= correctColIdx:
+                # set average
+                row[idx] = clean(item, sums[idx] / rows)
+              else:
+                row[idx] = item
+            all.append(row)
+
+          writer.writerows(all)
+
+preprocess('./2015.csv','./2015_preprocessed.csv', 3)
+preprocess('./2016.csv','./2016_preprocessed.csv', 3)
+preprocess('./2017.csv','./2017_preprocessed.csv', 2)
+preprocess('./2018.csv','./2018_preprocessed.csv', 2)
+preprocess('./2019.csv','./2019_preprocessed.csv', 2)
+```
+
+Another issue was, that years 2018 and 2019 don't have value **Dystopia Residual**, which, together with other values in particular areas, factors up main happiness score. Luckily it was easily compute with simple substraction and addition via following code snippet:
 
 ```
 import csv
@@ -54,4 +121,4 @@ Happiest countries, across the board, are Canada, U.S.A, Australia, Finland, Swe
 
 On contrary, not so happy country are mainly countries in Africa. Countries here average value around 4.
 
-Main difference we can observe between these two categories is that people tend to score Economy, Family and Health equally. In less happy countries this distribution isn't equal, usually people here rate family over everythin else.
+Main difference we can observe between these two categories is that people tend to score Economy, Family and Health equally. In less happy countries this distribution isn't equal, usually people here rate family higher than other areas.
